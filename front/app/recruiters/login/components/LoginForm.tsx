@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loginRecruiterSchema } from "@/lib/validations/login.schema";
+import { redirect } from "next/navigation";
 
 export default function LoginForm() {
   const form = useForm({
@@ -26,6 +27,9 @@ export default function LoginForm() {
 
   const onSubmit = (data: z.infer<typeof loginRecruiterSchema>) => {
     console.log("Form Data:", data);
+    setTimeout(() => {
+      redirect("/recruiters/dashboard");
+    }, 2000);
   };
 
   return (

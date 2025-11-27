@@ -31,7 +31,7 @@ export default function RegisterForm() {
   const onSubmit = (data: z.infer<typeof registerCandidateSchema>) => {
     console.log("Form Data:", data);
     setTimeout(() => {
-      redirect("/recruiters/login");
+      redirect("/candidates/login");
     }, 2000);
   };
 
