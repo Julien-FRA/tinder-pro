@@ -1,2 +1,2 @@
-# tinder-pro
+# MeetWork
 Application pour faciliter la recherche d'emplois.
