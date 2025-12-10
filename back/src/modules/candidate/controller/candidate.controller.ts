@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CandidateService } from '../services/candidate.service';
-import type { CreateCandidateDto } from '../dto/candidate.dto';
+import { CreateCandidateDto } from '../dto/candidate.dto';
 
 @Controller('candidates')
 export class CandidateController {
