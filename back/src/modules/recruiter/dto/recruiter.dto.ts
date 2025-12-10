@@ -1,24 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class CreateCandidateDto {
-  @ApiProperty({ description: 'Prénom du candidat', example: 'John' })
+export class CreateRecruiterDto {
+  @ApiProperty({ description: "Nom de l'entreprise", example: 'Google' })
+  @IsString({
+    message: "Le nom de l'entreprise doit être une chaine de caractère.",
+  })
+  @MinLength(3, {
+    message: "Le nom de l'entreprise doit faire au moins 3 caractères.",
+  })
+  @MaxLength(20, {
+    message: "Le nom de l'entreprise doit faire au maximum 20 caractères.",
+  })
+  enterprise: string;
+
+  @ApiProperty({
+    description: 'Nom du recruteur',
+    example: 'Doe',
+  })
   @IsString({ message: 'Votre nom doit être une chaine de caractère.' })
   @MinLength(3, { message: 'Votre nom doit faire au moins 3 caractères.' })
   @MaxLength(20, { message: 'Votre nom doit faire au maximum 20 caractères.' })
-  firstName: string;
-
-  @ApiProperty({ description: 'Nom du candidat', example: 'Doe' })
-  @IsString({ message: 'Votre prénom doit être une chaine de caractère.' })
-  @MinLength(3, { message: 'Votre prénom doit faire au moins 3 caractères.' })
-  @MaxLength(20, {
-    message: 'Votre prénom doit faire au maximum 20 caractères.',
-  })
-  lastName: string;
+  name: string;
 
   @ApiProperty({
-    description: 'Email du candidat',
-    example: 'john.doe@example.com',
+    description: "Email de l'entreprise",
+    example: 'contact@google.com',
   })
   @IsEmail({}, { message: "L'email doit être une adresse email valide." })
   email: string;
@@ -40,31 +47,31 @@ export class CreateCandidateDto {
   password: string;
 
   @ApiProperty({
-    description: 'Téléphone du candidat',
+    description: 'Téléphone du recruteur',
     example: '+33612345678',
     required: false,
   })
-  phone?: string | null;
+  phone: string | null;
 }
 
-export class CandidateResponseDto {
-  @ApiProperty({ description: 'ID du candidat', example: '1' })
+export class RecruiterResponseDto {
+  @ApiProperty({ description: 'ID du recruteur', example: '1' })
   id: string;
 
-  @ApiProperty({ description: 'Prénom du candidat', example: 'John' })
-  firstName: string;
+  @ApiProperty({ description: "Nom de l'entreprise", example: 'Google' })
+  enterprise: string;
 
-  @ApiProperty({ description: 'Nom du candidat', example: 'Doe' })
-  lastName: string;
+  @ApiProperty({ description: 'Nom du recruteur', example: 'Doe' })
+  name: string;
 
   @ApiProperty({
-    description: 'Email du candidat',
-    example: 'john.doe@example.com',
+    description: 'Email du recruteur',
+    example: 'contact@google.com',
   })
   email: string;
 
   @ApiProperty({
-    description: 'Téléphone du candidat',
+    description: 'Téléphone du recruteur',
     example: '+33612345678',
     required: false,
   })
@@ -82,21 +89,21 @@ export class CandidateResponseDto {
   })
   updatedAt: Date;
 
-  constructor(candidate: {
+  constructor(recruiter: {
     id: string;
-    firstName: string;
-    lastName: string;
+    enterprise: string;
+    name: string;
     email: string;
     phone?: string | null;
     createdAt: Date;
     updatedAt: Date;
   }) {
-    this.id = candidate.id;
-    this.firstName = candidate.firstName;
-    this.lastName = candidate.lastName;
-    this.email = candidate.email;
-    this.phone = candidate.phone;
-    this.createdAt = candidate.createdAt;
-    this.updatedAt = candidate.updatedAt;
+    this.id = recruiter.id;
+    this.enterprise = recruiter.enterprise;
+    this.name = recruiter.name;
+    this.email = recruiter.email;
+    this.phone = recruiter.phone;
+    this.createdAt = recruiter.createdAt;
+    this.updatedAt = recruiter.updatedAt;
   }
 }
