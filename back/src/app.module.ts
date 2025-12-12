@@ -4,9 +4,19 @@ import { AppService } from './app.service';
 import { CandidateModule } from './modules/candidate/candidate.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { RecruiterModule } from './modules/recruiter/recruiter.module';
+import { ConfigModule } from '@nestjs/config/dist/config.module';
+import { validate } from './config/env.validation';
 
 @Module({
-  imports: [PrismaModule, CandidateModule, RecruiterModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate,
+    }),
+    PrismaModule,
+    CandidateModule,
+    RecruiterModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
