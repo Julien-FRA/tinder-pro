@@ -14,9 +14,8 @@ export class RecruiterService {
     return new RecruiterResponseDto(recruiter);
   }
 
-  async findByEmail(email: string): Promise<RecruiterResponseDto | null> {
-    const recruiter = await this.recruiterRepository.findByEmail(email);
-    return recruiter ? new RecruiterResponseDto(recruiter) : null;
+  async findByEmail(email: string) {
+    return this.recruiterRepository.findByEmail(email);
   }
 
   async findById(id: string): Promise<RecruiterResponseDto | null> {

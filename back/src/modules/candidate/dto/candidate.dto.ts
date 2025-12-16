@@ -100,3 +100,17 @@ export class CandidateResponseDto {
     this.updatedAt = candidate.updatedAt;
   }
 }
+
+export class LoginCandidateDto {
+  @ApiProperty({
+    description: 'Email du candidat',
+    example: 'john.doe@example.com',
+  })
+  email: string;
+
+  @ApiProperty({
+    description: 'Mot de passe',
+    example: 'password123',
+  })
+  password: string;
+}

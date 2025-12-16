@@ -107,3 +107,17 @@ export class RecruiterResponseDto {
     this.updatedAt = recruiter.updatedAt;
   }
 }
+
+export class LoginRecruiterDto {
+  @ApiProperty({
+    description: "Email de l'entreprise",
+    example: 'contact@google.com',
+  })
+  email: string;
+
+  @ApiProperty({
+    description: 'Mot de passe',
+    example: 'password123',
+  })
+  password: string;
+}
