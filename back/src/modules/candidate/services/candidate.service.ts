@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CandidateRepository } from '../repository/candidate.repository';
 import { CandidateResponseDto, CreateCandidateDto } from '../dto/candidate.dto';
 
@@ -15,16 +15,32 @@ export class CandidateService {
   }
 
   async findByEmail(email: string) {
-    return this.candidateRepository.findByEmail(email);
+    const candidate = await this.candidateRepository.findByEmail(email);
+
+    if (!candidate) {
+      throw new NotFoundException('Candidat non trouvé');
+    }
+
+    return candidate;
   }
 
   async findById(id: string): Promise<CandidateResponseDto | null> {
     const candidate = await this.candidateRepository.findById(id);
-    return candidate ? new CandidateResponseDto(candidate) : null;
+
+    if (!candidate) {
+      throw new NotFoundException('Candidat non trouvé');
+    }
+
+    return new CandidateResponseDto(candidate);
   }
 
   async findAll(): Promise<CandidateResponseDto[]> {
     const candidates = await this.candidateRepository.findAll();
+
+    if (!candidates || candidates.length === 0) {
+      throw new NotFoundException('Aucun candidat trouvé');
+    }
+
     return candidates.map((candidate) => new CandidateResponseDto(candidate));
   }
 }
