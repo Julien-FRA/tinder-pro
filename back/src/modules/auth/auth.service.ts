@@ -33,7 +33,7 @@ export class AuthService {
 
     const candidate =
       await this.candidateService.createCandidate(createCandidateDto);
-    return this.generateToken(candidate);
+    return this.generateToken(candidate, 'candidate');
   }
 
   async signupRecruiter(createRecruiterDto: CreateRecruiterDto) {
@@ -46,7 +46,7 @@ export class AuthService {
 
     const recruiter =
       await this.recruiterService.createRecruiter(createRecruiterDto);
-    return this.generateToken(recruiter);
+    return this.generateToken(recruiter, 'recruiter');
   }
 
   async loginCandidate(loginCandidateDto: LoginCandidateDto) {
@@ -59,7 +59,7 @@ export class AuthService {
     ) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
-    return this.generateToken(candidate);
+    return this.generateToken(candidate, 'candidate');
   }
 
   async loginRecruiter(loginRecruiterDto: LoginRecruiterDto) {
@@ -72,13 +72,17 @@ export class AuthService {
     ) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
-    return this.generateToken(recruiter);
+    return this.generateToken(recruiter, 'recruiter');
   }
 
-  private generateToken(user: CandidateResponseDto | RecruiterResponseDto) {
+  private generateToken(
+    user: CandidateResponseDto | RecruiterResponseDto,
+    role: 'candidate' | 'recruiter',
+  ) {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
+      role: role,
     };
     return {
       access_token: this.jwtService.sign(payload),
