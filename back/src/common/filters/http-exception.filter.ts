@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../../generated/prisma/client';
 
 /**
  * Global exception filter to handle all types of errors
@@ -33,10 +33,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
-      } else if (typeof exceptionResponse === 'object') {
-        const response = exceptionResponse as any;
-        message = response.message || message;
-        error = response.error || error;
+      } else if (
+        typeof exceptionResponse === 'object' &&
+        exceptionResponse !== null
+      ) {
+        const response = exceptionResponse as Record<string, unknown>;
+        message = (response.message as string | string[]) || message;
+        error = (response.error as string) || error;
       }
     }
     // Handle Prisma errors
@@ -62,8 +65,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     // Log the error for debugging
+    const messageStr = Array.isArray(message) ? message.join(', ') : message;
     this.logger.error(
-      `${request.method} ${request.url} - Status: ${status} - Message: ${message}`,
+      `${request.method} ${request.url} - Status: ${status} - Message: ${messageStr}`,
     );
 
     // Send standardized error response
@@ -85,7 +89,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     error: string;
   } {
     switch (exception.code) {
-      case 'P2002':
+      case 'P2002': {
         // Unique constraint violation
         const target = (exception.meta?.target as string[]) || [];
         const field = target[0] || 'champ';
@@ -94,34 +98,39 @@ export class HttpExceptionFilter implements ExceptionFilter {
           message: `${field} déjà utilisé`,
           error: 'Conflict',
         };
-      case 'P2025':
+      }
+      case 'P2025': {
         // Record not found
         return {
           status: HttpStatus.NOT_FOUND,
           message: 'Ressource introuvable',
           error: 'Not Found',
         };
-      case 'P2003':
+      }
+      case 'P2003': {
         // Foreign key constraint failed
         return {
           status: HttpStatus.BAD_REQUEST,
           message: 'Référence invalide',
           error: 'Bad Request',
         };
-      case 'P2014':
+      }
+      case 'P2014': {
         // Required relation violation
         return {
           status: HttpStatus.BAD_REQUEST,
           message: 'Relation requise manquante',
           error: 'Bad Request',
         };
-      default:
+      }
+      default: {
         this.logger.error(`Unhandled Prisma error code: ${exception.code}`);
         return {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           message: 'Erreur de base de données',
           error: 'Internal Server Error',
         };
+      }
     }
   }
 }

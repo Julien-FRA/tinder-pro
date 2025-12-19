@@ -121,6 +121,8 @@ export class LoginRecruiterDto {
     example: 'password123',
   })
   @IsString({ message: 'Le mot de passe doit être une chaine de caractère.' })
-  @MinLength(3, { message: 'Le mot de passe doit faire au moins 3 caractères.' })
+  @MinLength(3, {
+    message: 'Le mot de passe doit faire au moins 3 caractères.',
+  })
   password: string;
 }

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { RecruiterRepository } from '../repository/recruiter.repository';
 import { CreateRecruiterDto, RecruiterResponseDto } from '../dto/recruiter.dto';
+import { NotFoundException } from 'src/common/exceptions/custom.exception';
 import {
-  NotFoundException,
-  BadRequestException,
-} from 'src/common/exceptions/custom.exception';
-import { validateUUID, validateEmail } from 'src/common/validators/id.validator';
+  validateUUID,
+  validateEmail,
+} from 'src/common/validators/id.validator';
 
 @Injectable()
 export class RecruiterService {

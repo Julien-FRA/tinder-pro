@@ -3,7 +3,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { CreateRecruiterDto } from '../dto/recruiter.dto';
 import * as bcrypt from 'bcrypt';
 import { ConflictException } from 'src/common/exceptions/custom.exception';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class RecruiterRepository {
@@ -13,10 +13,7 @@ export class RecruiterRepository {
 
   async createRecruiter(createRecruiterDto: CreateRecruiterDto) {
     try {
-      const hashedPassword = await bcrypt.hash(
-        createRecruiterDto.password,
-        12,
-      );
+      const hashedPassword = await bcrypt.hash(createRecruiterDto.password, 12);
       return await this.prismaService.recruiterUser.create({
         data: {
           enterprise: createRecruiterDto.enterprise,
@@ -27,10 +24,8 @@ export class RecruiterRepository {
         },
       });
     } catch (error) {
-      this.logger.error(
-        `Error creating recruiter: ${error.message}`,
-        error.stack,
-      );
+      const err = error as Error;
+      this.logger.error(`Error creating recruiter: ${err.message}`, err.stack);
 
       // Handle Prisma unique constraint violation
       if (
@@ -41,7 +36,7 @@ export class RecruiterRepository {
       }
 
       // Handle bcrypt errors
-      if (error.name === 'Error' && error.message.includes('bcrypt')) {
+      if (err.name === 'Error' && err.message.includes('bcrypt')) {
         throw new Error('Erreur lors du hachage du mot de passe');
       }
 
@@ -55,9 +50,10 @@ export class RecruiterRepository {
         where: { email },
       });
     } catch (error) {
+      const err = error as Error;
       this.logger.error(
-        `Error finding recruiter by email: ${error.message}`,
-        error.stack,
+        `Error finding recruiter by email: ${err.message}`,
+        err.stack,
       );
       throw error;
     }
@@ -69,9 +65,10 @@ export class RecruiterRepository {
         where: { id },
       });
     } catch (error) {
+      const err = error as Error;
       this.logger.error(
-        `Error finding recruiter by ID: ${error.message}`,
-        error.stack,
+        `Error finding recruiter by ID: ${err.message}`,
+        err.stack,
       );
       throw error;
     }
@@ -81,9 +78,10 @@ export class RecruiterRepository {
     try {
       return await this.prismaService.recruiterUser.findMany();
     } catch (error) {
+      const err = error as Error;
       this.logger.error(
-        `Error finding all recruiters: ${error.message}`,
-        error.stack,
+        `Error finding all recruiters: ${err.message}`,
+        err.stack,
       );
       throw error;
     }

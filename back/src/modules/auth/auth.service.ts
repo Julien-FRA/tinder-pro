@@ -131,7 +131,8 @@ export class AuthService {
         user,
       };
     } catch (error) {
-      this.logger.error(`Error generating JWT token: ${error.message}`);
+      const err = error as Error;
+      this.logger.error(`Error generating JWT token: ${err.message}`);
       throw new Error('Erreur lors de la génération du token');
     }
   }
