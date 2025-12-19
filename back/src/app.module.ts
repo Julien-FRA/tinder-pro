@@ -7,6 +7,8 @@ import { RecruiterModule } from './modules/recruiter/recruiter.module';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { validate } from './config/env.validation';
 import { AuthModule } from './modules/auth/auth.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -15,11 +17,18 @@ import { AuthModule } from './modules/auth/auth.module';
       validate,
     }),
     PrismaModule,
+    JwtModule,
     AuthModule,
     CandidateModule,
     RecruiterModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_GUARD',
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

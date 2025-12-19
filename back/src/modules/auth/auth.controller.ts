@@ -9,12 +9,14 @@ import {
   CreateRecruiterDto,
   LoginRecruiterDto,
 } from '../recruiter/dto/recruiter.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('signup/candidate')
   @ApiOperation({ summary: 'Inscription candidat' })
   @ApiResponse({ status: 201, description: 'Candidat inscrit avec succès.' })
@@ -24,6 +26,7 @@ export class AuthController {
     return this.authService.signupCandidate(createCandidateDto);
   }
 
+  @Public()
   @Post('signup/recruiter')
   @ApiOperation({ summary: 'Inscription recruteur' })
   @ApiResponse({ status: 201, description: 'Recruteur inscrit avec succès.' })
@@ -33,6 +36,7 @@ export class AuthController {
     return this.authService.signupRecruiter(createRecruiterDto);
   }
 
+  @Public()
   @Post('login/candidate')
   @ApiOperation({ summary: 'Connexion candidat' })
   @ApiResponse({ status: 200, description: 'Candidat connecté avec succès.' })
@@ -42,6 +46,7 @@ export class AuthController {
     return this.authService.loginCandidate(loginCandidateDto);
   }
 
+  @Public()
   @Post('login/recruiter')
   @ApiOperation({ summary: 'Connexion recruteur' })
   @ApiResponse({ status: 200, description: 'Recruteur connecté avec succès.' })
