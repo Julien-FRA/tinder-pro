@@ -54,6 +54,16 @@ export class RecruiterController {
     return this.recruiterService.findByEmail(email);
   }
 
+  @Get()
+  @ApiOperation({ summary: 'Obtenir tous les recruteurs' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Liste des recruteurs',
+  })
+  findAll() {
+    return this.recruiterService.findAll();
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Trouver un recruteur par ID' })
   @ApiParam({ name: 'id', description: 'ID du recruteur (UUID)' })
@@ -71,15 +81,5 @@ export class RecruiterController {
   })
   findById(@Param('id') id: string) {
     return this.recruiterService.findById(id);
-  }
-
-  @Get('findAll')
-  @ApiOperation({ summary: 'Obtenir tous les recruteurs' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Liste des recruteurs',
-  })
-  findAll() {
-    return this.recruiterService.findAll();
   }
 }

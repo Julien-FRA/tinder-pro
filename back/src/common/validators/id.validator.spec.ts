@@ -10,7 +10,9 @@ describe('ID Validator', () => {
 
     it('should throw BadRequestException for invalid UUID', () => {
       const invalidUUID = 'invalid-uuid';
-      expect(() => validateUUID(invalidUUID, 'Test ID')).toThrow(BadRequestException);
+      expect(() => validateUUID(invalidUUID, 'Test ID')).toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException for empty string', () => {
@@ -57,7 +59,9 @@ describe('ID Validator', () => {
         validateEmail('invalid-email');
       } catch (error) {
         expect(error).toBeInstanceOf(BadRequestException);
-        expect((error as BadRequestException).message).toBe('Adresse email invalide');
+        expect((error as BadRequestException).message).toBe(
+          'Adresse email invalide',
+        );
       }
     });
   });

@@ -31,20 +31,10 @@ export class AuthService {
   ) {}
 
   async signupCandidate(createCandidateDto: CreateCandidateDto) {
-    try {
-      // Check if email already exists - this will throw NotFoundException if not found
-      const existingCandidate = await this.candidateService.findByEmail(
-        createCandidateDto.email,
-      );
-      if (existingCandidate) {
-        throw new ConflictException('Email déjà utilisé');
-      }
-    } catch (error) {
-      // If NotFoundException, it means email doesn't exist - proceed with signup
-      if (!(error instanceof NotFoundException)) {
-        throw error;
-      }
-    }
+    await this.checkEmailNotInUse(
+      createCandidateDto.email,
+      this.candidateService.findByEmail.bind(this.candidateService),
+    );
 
     const candidate =
       await this.candidateService.createCandidate(createCandidateDto);
@@ -52,20 +42,10 @@ export class AuthService {
   }
 
   async signupRecruiter(createRecruiterDto: CreateRecruiterDto) {
-    try {
-      // Check if email already exists - this will throw NotFoundException if not found
-      const existingRecruiter = await this.recruiterService.findByEmail(
-        createRecruiterDto.email,
-      );
-      if (existingRecruiter) {
-        throw new ConflictException('Email déjà utilisé');
-      }
-    } catch (error) {
-      // If NotFoundException, it means email doesn't exist - proceed with signup
-      if (!(error instanceof NotFoundException)) {
-        throw error;
-      }
-    }
+    await this.checkEmailNotInUse(
+      createRecruiterDto.email,
+      this.recruiterService.findByEmail.bind(this.recruiterService),
+    );
 
     const recruiter =
       await this.recruiterService.createRecruiter(createRecruiterDto);
@@ -117,6 +97,29 @@ export class AuthService {
         throw new UnauthorizedException('Email ou mot de passe incorrect');
       }
       throw error;
+    }
+  }
+
+  /**
+   * Helper method to check if email is already in use
+   * @param email - Email to check
+   * @param findByEmailFn - Function to find user by email
+   * @throws ConflictException if email is already in use
+   */
+  private async checkEmailNotInUse(
+    email: string,
+    findByEmailFn: (email: string) => Promise<unknown>,
+  ): Promise<void> {
+    try {
+      const existingUser = await findByEmailFn(email);
+      if (existingUser) {
+        throw new ConflictException('Email déjà utilisé');
+      }
+    } catch (error) {
+      // If NotFoundException, it means email doesn't exist - which is what we want
+      if (!(error instanceof NotFoundException)) {
+        throw error;
+      }
     }
   }
 

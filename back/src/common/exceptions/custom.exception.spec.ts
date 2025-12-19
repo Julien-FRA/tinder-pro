@@ -10,7 +10,10 @@ import {
 describe('CustomException', () => {
   describe('CustomException', () => {
     it('should create a custom exception with message and status code', () => {
-      const exception = new CustomException('Test error', HttpStatus.BAD_REQUEST);
+      const exception = new CustomException(
+        'Test error',
+        HttpStatus.BAD_REQUEST,
+      );
       expect(exception.message).toBe('Test error');
       expect(exception.getStatus()).toBe(HttpStatus.BAD_REQUEST);
     });

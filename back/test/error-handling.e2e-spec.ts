@@ -6,6 +6,14 @@ import { AppModule } from '../src/app.module';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
 
+interface ErrorResponse {
+  statusCode: number;
+  message: string | string[];
+  error: string;
+  timestamp: string;
+  path: string;
+}
+
 describe('Error Handling (e2e)', () => {
   let app: INestApplication<App>;
 
@@ -64,10 +72,11 @@ describe('Error Handling (e2e)', () => {
         })
         .expect(400);
 
-      expect(response.body).toHaveProperty('statusCode', 400);
-      const message = Array.isArray(response.body.message)
-        ? response.body.message.join(' ')
-        : response.body.message;
+      const body = response.body as ErrorResponse;
+      expect(body).toHaveProperty('statusCode', 400);
+      const message = Array.isArray(body.message)
+        ? body.message.join(' ')
+        : body.message;
       expect(message).toContain('email');
     });
 
@@ -76,8 +85,9 @@ describe('Error Handling (e2e)', () => {
         .get('/candidates/invalid-uuid')
         .expect(400);
 
-      expect(response.body).toHaveProperty('statusCode', 400);
-      expect(response.body.message).toContain('invalide');
+      const body = response.body as ErrorResponse;
+      expect(body).toHaveProperty('statusCode', 400);
+      expect(body.message).toContain('invalide');
     });
   });
 
@@ -88,8 +98,9 @@ describe('Error Handling (e2e)', () => {
         .get(`/candidates/${validUUID}`)
         .expect(404);
 
-      expect(response.body).toHaveProperty('statusCode', 404);
-      expect(response.body.message).toContain('introuvable');
+      const body = response.body as ErrorResponse;
+      expect(body).toHaveProperty('statusCode', 404);
+      expect(body.message).toContain('introuvable');
     });
   });
 
@@ -99,17 +110,16 @@ describe('Error Handling (e2e)', () => {
         .get('/candidates/invalid-uuid')
         .expect(400);
 
+      const body = response.body as ErrorResponse;
       // Check that all required fields are present
-      expect(response.body).toHaveProperty('statusCode');
-      expect(response.body).toHaveProperty('message');
-      expect(response.body).toHaveProperty('error');
-      expect(response.body).toHaveProperty('timestamp');
-      expect(response.body).toHaveProperty('path');
+      expect(body).toHaveProperty('statusCode');
+      expect(body).toHaveProperty('message');
+      expect(body).toHaveProperty('error');
+      expect(body).toHaveProperty('timestamp');
+      expect(body).toHaveProperty('path');
 
       // Check timestamp format
-      expect(new Date(response.body.timestamp).toISOString()).toBe(
-        response.body.timestamp,
-      );
+      expect(new Date(body.timestamp).toISOString()).toBe(body.timestamp);
     });
   });
 });
